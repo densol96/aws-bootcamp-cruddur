@@ -14,16 +14,24 @@ from services.create_message import *
 from services.show_activity import *
 
 app = Flask(__name__)
-frontend = os.getenv('FRONTEND_URL')
-backend = os.getenv('BACKEND_URL')
-origins = [frontend, backend]
+# frontend = os.getenv('FRONTEND_URL') if os.getenv('FRONTEND_URL') is not None else "*"
+# backend = os.getenv('BACKEND_URL') if os.getenv('BACKEND_URL') is not None else "*"
+frontend = "*"
+backend = "*"
+# origins = [frontend, backend]
+origins = "*"
+print(origins)
 cors = CORS(
   app, 
-  resources={r"/api/*": {"origins": origins}},
+  resources={r"*": {"origins": origins}},
   expose_headers="location,link",
   allow_headers="content-type,if-modified-since",
   methods="OPTIONS,GET,HEAD,POST"
 )
+
+@app.route("/", methods=['GET'])
+def root_page():
+  return "Hello World!"
 
 @app.route("/api/message_groups", methods=['GET'])
 def data_message_groups():
@@ -61,6 +69,7 @@ def data_create_message():
   return
 
 @app.route("/api/activities/home", methods=['GET'])
+@cross_origin()
 def data_home():
   data = HomeActivities.run()
   return data, 200

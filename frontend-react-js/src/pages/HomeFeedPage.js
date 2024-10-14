@@ -52,8 +52,10 @@ export default function HomeFeedPage() {
     dataFetchedRef.current = true;
 
     loadData();
-    checkAuth();
+    // checkAuth();
   }, [])
+
+  console.log("TESTIK ==> ", activities);
 
   return (
     <article>
