@@ -90,6 +90,21 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Activity'
+  /api/activities/notifications:
+    get:
+      description: 'Return a feed of activities'
+      tags:
+        - activities
+      
+      responses:
+        '200':
+          description: Return an array of activities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Activity'
   /api/message_groups:
     get:
       description: 'Return a list of two way private conversations for the user'
@@ -148,6 +163,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Message'
+ 
 
 components:
   schemas:
