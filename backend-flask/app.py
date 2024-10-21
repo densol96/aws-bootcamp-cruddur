@@ -12,6 +12,7 @@ from services.message_groups import *
 from services.messages import *
 from services.create_message import *
 from services.show_activity import *
+from services.notifications_activities import *
 
 app = Flask(__name__)
 # frontend = os.getenv('FRONTEND_URL') if os.getenv('FRONTEND_URL') is not None else "*"
@@ -91,6 +92,13 @@ def data_search():
   else:
     return model['data'], 200
   return
+
+
+@app.route("/api/activities/notifications", methods=['GET'])
+@cross_origin()
+def data_notifications():
+  data = NotificationsActivities.run()
+  return data, 200
 
 @app.route("/api/activities", methods=['POST','OPTIONS'])
 @cross_origin()
