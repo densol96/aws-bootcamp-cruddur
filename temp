@@ -1,0 +1,2 @@
+export HONEYCOMB_SERVICE_NAME=Cruddur
+gp env HONEYCOMB_SERVICE_NAME=Cruddur
