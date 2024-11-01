@@ -26,6 +26,11 @@ from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from aws_xray_sdk.core import xray_recorder
 from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 
+# AWS CloudWatch Logs
+import watchtower
+import logging
+from time import strftime
+
 # Initialize tracing and an exporter that can send data to Honeycomb
 provider = TracerProvider()
 processor = BatchSpanProcessor(OTLPSpanExporter())
@@ -40,9 +45,18 @@ FlaskInstrumentor().instrument_app(app)
 RequestsInstrumentor().instrument()
 
 # AWS xray
-xray_url = os.getenv("AWS_XRAY_URL")
-xray_recorder.configure(service='Cruddur', dynamic_naming=xray_url)
-XRayMiddleware(app, xray_recorder)
+# xray_url = os.getenv("AWS_XRAY_URL")
+# xray_recorder.configure(service='Cruddur', dynamic_naming=xray_url)
+# XRayMiddleware(app, xray_recorder)
+
+# Configuring Logger to Use CloudWatch
+# LOGGER = logging.getLogger(__name__)
+# LOGGER.setLevel(logging.DEBUG)
+# console_handler = logging.StreamHandler()
+# cw_handler = watchtower.CloudWatchLogHandler(log_group='cruddur')
+# LOGGER.addHandler(console_handler)
+# LOGGER.addHandler(cw_handler)
+# LOGGER.info("I hope you get this log, CloudWatch!")
 
 # frontend = os.getenv('FRONTEND_URL') if os.getenv('FRONTEND_URL') is not None else "*"
 # backend = os.getenv('BACKEND_URL') if os.getenv('BACKEND_URL') is not None else "*"
