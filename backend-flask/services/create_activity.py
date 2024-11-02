@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime, timedelta, timezone
+
 class CreateActivity:
   def run(message, user_handle, ttl):
     model = {

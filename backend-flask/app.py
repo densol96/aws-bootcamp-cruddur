@@ -45,9 +45,9 @@ FlaskInstrumentor().instrument_app(app)
 RequestsInstrumentor().instrument()
 
 # AWS xray
-# xray_url = os.getenv("AWS_XRAY_URL")
-# xray_recorder.configure(service='Cruddur', dynamic_naming=xray_url)
-# XRayMiddleware(app, xray_recorder)
+xray_url = os.getenv("AWS_XRAY_URL")
+xray_recorder.configure(service='Cruddur', dynamic_naming=xray_url)
+XRayMiddleware(app, xray_recorder)
 
 # Configuring Logger to Use CloudWatch
 # LOGGER = logging.getLogger(__name__)
@@ -74,6 +74,7 @@ cors = CORS(
 )
 
 @app.route("/", methods=['GET'])
+
 def root_page():
   return "Hello World!"
 
@@ -139,6 +140,7 @@ def data_search():
 
 @app.route("/api/activities/notifications", methods=['GET'])
 @cross_origin()
+@xray_recorder.capture('activities_show_segment')
 def data_notifications():
   data = NotificationsActivities.run()
   return data, 200

@@ -1,8 +1,11 @@
 from datetime import datetime, timedelta, timezone
+from aws_xray_sdk.core import xray_recorder
 
 class NotificationsActivities:
     def run():
+        slice = xray_recorder.begin_subsegment("testik__inner")
         now = datetime.now(timezone.utc).astimezone()
+        slice.put_annotation("my_name", "solodeni")
         results = [{
         'uuid': '68f126b0-1ceb-4a33-88be-d90fa7109eee',
         'handle':  'Some Guy',
@@ -42,4 +45,5 @@ class NotificationsActivities:
         'replies': []
         }
         ]
+        xray_recorder.end_subsegment()
         return results
