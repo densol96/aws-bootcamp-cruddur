@@ -4,22 +4,19 @@ import { ReactComponent as Logo } from "../components/svg/logo.svg";
 import { Link } from "react-router-dom";
 
 // [TODO] Authenication
-// import { Auth } from 'aws-amplify';
+import { Auth } from 'aws-amplify';
 
 export default function SignupPage() {
   // Username is Eamil
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
-  const [username, setUsername] = React.useState("");
+  const [nickname, setNickname] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [errors, setErrors] = React.useState("");
 
   const onsubmit = async (event) => {
     event.preventDefault();
     setErrors("");
-    console.log("username", username);
-    console.log("email", email);
-    console.log("name", name);
     try {
       const { user } = await Auth.signUp({
         username: email,
@@ -27,7 +24,7 @@ export default function SignupPage() {
         attributes: {
           name: name,
           email: email,
-          preferred_username: username,
+          nickname: nickname,
         },
         autoSignIn: {
           // optional - enables auto sign in after user is confirmed
@@ -49,8 +46,8 @@ export default function SignupPage() {
   const email_onchange = (event) => {
     setEmail(event.target.value);
   };
-  const username_onchange = (event) => {
-    setUsername(event.target.value);
+  const nickname_onchange = (event) => {
+    setNickname(event.target.value);
   };
   const password_onchange = (event) => {
     setPassword(event.target.value);
@@ -81,11 +78,11 @@ export default function SignupPage() {
             </div>
 
             <div className="field text_field username">
-              <label>Username</label>
+              <label>Nickname</label>
               <input
                 type="text"
-                value={username}
-                onChange={username_onchange}
+                value={nickname}
+                onChange={nickname_onchange}
               />
             </div>
 

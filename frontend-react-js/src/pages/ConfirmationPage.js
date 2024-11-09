@@ -1,16 +1,20 @@
 import "./ConfirmationPage.css";
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { ReactComponent as Logo } from "../components/svg/logo.svg";
 
 // [TODO] Authenication
-// import { Auth } from 'aws-amplify';
+import { Auth } from 'aws-amplify';
 
 export default function ConfirmationPage() {
-  const [email, setEmail] = React.useState("");
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [email, setEmail] = React.useState(searchParams.get("email"));
   const [code, setCode] = React.useState("");
   const [errors, setErrors] = React.useState("");
   const [codeSent, setCodeSent] = React.useState(false);
+
+
 
   const params = useParams();
 
@@ -47,7 +51,7 @@ export default function ConfirmationPage() {
     setErrors("");
     try {
       await Auth.confirmSignUp(email, code);
-      window.location.href = "/";
+      window.location.href = "/signin";
     } catch (error) {
       setErrors(error.message);
     }
