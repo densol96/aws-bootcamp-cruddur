@@ -45,7 +45,7 @@ export default function HomeFeedPage() {
       // Optional, By default is false.
       // If set to true, this call will send a
       // request to Cognito to get the latest user data
-      bypassCache: false,
+      bypassCache: true,
     })
       .then((user) => {
         console.log("user", user);
