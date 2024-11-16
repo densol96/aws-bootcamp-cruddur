@@ -5,11 +5,12 @@ import time # testing duration_ms in honeycomb telemetry
 tracer = trace.get_tracer("playing-around")
 
 class HomeActivities:
-  def run():
+  @staticmethod
+  def run(authenticated = None):
     with tracer.start_as_current_span("some-long-running-handler"):
       span = trace.get_current_span()
       span.set_attribute("my_name", "solodeni") # FOR TESTING PURPOSES
-      time.sleep(5)
+      # time.sleep(5)
       now = datetime.now(timezone.utc).astimezone()
       results = [{
         'uuid': '68f126b0-1ceb-4a33-88be-d90fa7109eee',
@@ -50,4 +51,15 @@ class HomeActivities:
         'replies': []
       }
       ]
+
+      if authenticated is not None:
+        results.insert(0, {
+        'uuid': '248959df-3079-4947-b847-9e0892d1bab4',
+        'handle':  'ADMIN',
+        'message': 'Only authenticated users can see this thing!',
+        'created_at': (now - timedelta(hours=1)).isoformat(),
+        'expires_at': (now + timedelta(hours=12)).isoformat(),
+        'likes': 0,
+        'replies': []
+      })
       return results

@@ -12,6 +12,14 @@ services:
       AWS_DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
       AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
       AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+      # cognito relate jwt verification (some of these are used on the client as well, so I will just reuse these here)
+      COGNITO_USER_POOLS_ID: "${REACT_APP_AWS_USER_POOLS_ID}" 
+      COGNITO_REGION: "${AWS_DEFAULT_REGION}"
+      COGNITO_CLIENT_ID:  "${REACT_APP_CLIENT_ID}"
+      # to enable Live-reload
+      FLASK_APP: app.py
+      FLASK_ENV: development
+      FLASK_DEBUG: 1
     build: ./backend-flask
     ports:
       - "4567:4567"

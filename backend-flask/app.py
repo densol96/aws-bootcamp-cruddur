@@ -31,6 +31,9 @@ import watchtower
 import logging
 from time import strftime
 
+# Custom JWT verifier using Cognito public key
+from lib.cognito_verification import jwt_verifier
+
 # Initialize tracing and an exporter that can send data to Honeycomb
 provider = TracerProvider()
 processor = BatchSpanProcessor(OTLPSpanExporter())
@@ -74,7 +77,6 @@ cors = CORS(
 )
 
 @app.route("/", methods=['GET'])
-
 def root_page():
   return "Hello World!"
 
@@ -97,7 +99,6 @@ def data_messages(handle):
     return model['errors'], 422
   else:
     return model['data'], 200
-  return
 
 @app.route("/api/messages", methods=['POST','OPTIONS'])
 @cross_origin()
@@ -111,12 +112,12 @@ def data_create_message():
     return model['errors'], 422
   else:
     return model['data'], 200
-  return
 
 @app.route("/api/activities/home", methods=['GET'])
 @cross_origin()
 def data_home():
-  data = HomeActivities.run()
+  authenticated = jwt_verifier.accept_request_headers(request.headers)
+  data = HomeActivities.run(authenticated)
   return data, 200
 
 @app.route("/api/activities/@<string:handle>", methods=['GET'])
@@ -135,7 +136,6 @@ def data_search():
     return model['errors'], 422
   else:
     return model['data'], 200
-  return
 
 
 @app.route("/api/activities/notifications", methods=['GET'])
@@ -156,7 +156,6 @@ def data_activities():
     return model['errors'], 422
   else:
     return model['data'], 200
-  return
 
 @app.route("/api/activities/<string:activity_uuid>", methods=['GET'])
 def data_show_activity(activity_uuid):
@@ -173,7 +172,6 @@ def data_activities_reply(activity_uuid):
     return model['errors'], 422
   else:
     return model['data'], 200
-  return
 
 if __name__ == "__main__":
   app.run(debug=True)
