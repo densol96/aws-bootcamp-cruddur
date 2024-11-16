@@ -48,13 +48,12 @@ export default function HomeFeedPage() {
       bypassCache: true,
     })
       .then((user) => {
-        console.log("user", user);
         return Auth.currentAuthenticatedUser();
       })
       .then((cognito_user) => {
         setUser({
           display_name: cognito_user.attributes.name,
-          handle: cognito_user.attributes.preferred_username,
+          nickname: cognito_user.attributes.nickname,
         });
       })
       .catch((err) => console.log(err));

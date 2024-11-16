@@ -16,7 +16,7 @@ export default function ProfileInfo(props) {
     try {
         await Auth.signOut({ global: true });
         window.location.href = "/"
-        localStorage.removeItem("access_token")
+        // localStorage.removeItem("access_token")
     } catch (error) {
         console.log('error signing out: ', error);
     }
@@ -39,7 +39,7 @@ export default function ProfileInfo(props) {
         <div className="profile-avatar"></div>
         <div className="profile-desc">
           <div className="profile-display-name">{props.user.display_name || "My Name" }</div>
-          <div className="profile-username">@{props.user.handle || "handle"}</div>
+          <div className="profile-username">@{props.user.nickname || "handle"}</div>
         </div>
         <ElipsesIcon className='icon' />
       </div>
