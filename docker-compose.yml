@@ -25,6 +25,18 @@ services:
       - "4567:4567"
     volumes:
       - ./backend-flask:/backend-flask
+    depends_on:
+      - db
+  db:
+    image: postgres:13-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - '5432:5432'
+    volumes: 
+      - db:/var/lib/postgresql/data
   frontend-react-js:
     build: ./frontend-react-js
     ports:
@@ -54,3 +66,6 @@ networks:
   internal-network:
     driver: bridge
     name: cruddur
+volumes:
+  db:
+    driver: local
