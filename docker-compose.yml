@@ -20,6 +20,7 @@ services:
       FLASK_APP: app.py
       FLASK_ENV: development
       FLASK_DEBUG: 1
+      CONNECTION_URL: ${DOCKER_DB_URL}
     build: ./backend-flask
     ports:
       - "4567:4567"
