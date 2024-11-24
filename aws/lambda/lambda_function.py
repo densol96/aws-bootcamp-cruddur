@@ -4,7 +4,7 @@ import os
 
 def lambda_handler(event, context):
     user = event['request']['userAttributes']
-    print(user)
+    print(user) # {'sub': '20fc191c-20c...', 'email_verified': 'true', 'cognito:user_status': 'CONFIRMED', 'nickname': 'solodeni', 'name': 'Deniss', 'email': 'deniss11sol@gmail.com'}
     # try:
     #     conn = psycopg2.connect(
     #         host=(os.getenv('PG_HOSTNAME')),
