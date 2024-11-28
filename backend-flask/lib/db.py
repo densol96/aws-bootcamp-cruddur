@@ -5,15 +5,14 @@ import sys
 from flask import current_app as app
 
 class Db:
-    ## easier to just work with array either its [], len = 1, or len = many
-    # @staticmethod
-    # def query_wrap_object(sql_query):
-    #     wrapped_sql_query = f"""
-    #     (SELECT COALESCE(row_to_json(object_row),'{{}}'::json) FROM (
-    #     {sql_query}
-    #     ) object_row);
-    #     """
-    #     return wrapped_sql_query
+    @staticmethod
+    def query_wrap_object(sql_query):
+        wrapped_sql_query = f"""
+        (SELECT COALESCE(row_to_json(object_row),'{{}}'::json) FROM (
+        {sql_query}
+        ) object_row);
+        """
+        return wrapped_sql_query
 
     @staticmethod
     def query_wrap_array(sql_query):
@@ -45,17 +44,27 @@ class Db:
                 #  ([],)
                 return json[0]
 
-    ## easier to just work with array either its [], len = 1, or len = many
-    # def query_object_json(self,sql,params={}):
-    #     wrapped_sql = self.query_wrap_object(sql)
-    #     with self.pool.connection() as conn:
-    #         with conn.cursor() as cur:
-    #             cur.execute(wrapped_sql,params)
-    #             json = cur.fetchone()
-    #             print(json)
-    #             if json == None:
-    #                 return {}
-    #             else:
-    #                 return json[0]
+    def query_object_json(self,sql,params={}):
+        wrapped_sql = Db.query_wrap_object(sql)
+        with self.pool.connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(wrapped_sql,params)
+                json = cur.fetchone()
+                print(json)
+                if json == None:
+                    return None
+                else:
+                    return json[0]
+
+    def sql_query(self, sql, params={}):
+        with self.pool.connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(sql,params)
+                json = cur.fetchone()
+                if json == None:
+                    return None
+                else:
+                    return json[0]
+
 
 db = Db(os.getenv("RDS_CONNECTION_URL"))

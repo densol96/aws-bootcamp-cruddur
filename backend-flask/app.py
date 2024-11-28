@@ -152,7 +152,7 @@ def data_notifications():
 @cross_origin()
 def data_activities():
   model = CreateActivity.run(request)
-  if model['data'] is not None:
+  if model['errors'] is not None:
     return model['errors']['message'], model['errors']['status']
   else:
     return model['data'], 200
