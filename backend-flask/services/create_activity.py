@@ -1,12 +1,30 @@
 import uuid
 from datetime import datetime, timedelta, timezone
+from lib.db import db, Db
+from lib.cognito_verification import jwt_verifier
 
 class CreateActivity:
-  def run(message, user_handle, ttl):
+  @staticmethod
+  def run(request):
     model = {
-      'errors': None,
+      'errors': {
+        'message': None,
+        'status': None
+      },
       'data': None
     }
+
+    authenticated = jwt_verifier.accept_request_headers(request.headers)
+    if authenticated is None:
+      model['errors']['message'] = "You need to be authenticated to public cruds"
+      model['errors']['status'] = 401
+      return model
+    message = request.get_json()["message"]
+    ttl = request.get_json()["ttl"]
+
+    sql = """
+          INSERT INTO activities()
+          """
 
     now = datetime.now(timezone.utc).astimezone()
 
@@ -37,7 +55,7 @@ class CreateActivity:
 
     if model['errors']:
       model['data'] = {
-        'handle':  user_handle,
+        'nickname':  user_handle,
         'message': message
       }   
     else:

@@ -1,24 +1,61 @@
 from psycopg_pool import ConnectionPool
 import os
+import re
+import sys
+from flask import current_app as app
 
-def query_wrap_object(template):
-    sql = f"""
-    (SELECT COALESCE(row_to_json(object_row),'{{}}'::json) FROM (
-    {template}
-    ) object_row);
-    """
-    return sql
+class Db:
+    ## easier to just work with array either its [], len = 1, or len = many
+    # @staticmethod
+    # def query_wrap_object(sql_query):
+    #     wrapped_sql_query = f"""
+    #     (SELECT COALESCE(row_to_json(object_row),'{{}}'::json) FROM (
+    #     {sql_query}
+    #     ) object_row);
+    #     """
+    #     return wrapped_sql_query
 
-def query_wrap_array(template):
-    sql = f"""
-    (SELECT COALESCE(array_to_json(array_agg(row_to_json(array_row))),'[]'::json) FROM (
-    {template}
-    ) array_row);
-    """
-    return sql
+    @staticmethod
+    def query_wrap_array(sql_query):
+        wrapped_sql_query = f"""
+        (SELECT COALESCE(array_to_json(array_agg(row_to_json(array_row))),'[]'::json) FROM (
+        {sql_query}
+        ) array_row);
+        """
+        return wrapped_sql_query
+    
+    @staticmethod
+    def load_sql_script(*args):
+        script_path = os.path.join(app.root_path, 'db', 'sql', *args)
+        with open(script_path, 'r') as f:
+            template_content = f.read()
+            return template_content
 
+    def __init__(self, connection_url):
+        ## can config pool size here as well
+        ## self.pool = ConnectionPool(connection_url, min_size=1, max_size=5)
+        self.pool = ConnectionPool(connection_url)
 
-connection_url = os.getenv("CONNECTION_URL")
-pool = ConnectionPool(connection_url)
+    def query_array_json(self,sql,params={}):
+        wrapped_sql = self.query_wrap_array(sql)
+        with self.pool.connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(wrapped_sql,params)
+                json = cur.fetchone()
+                #  ([],)
+                return json[0]
 
+    ## easier to just work with array either its [], len = 1, or len = many
+    # def query_object_json(self,sql,params={}):
+    #     wrapped_sql = self.query_wrap_object(sql)
+    #     with self.pool.connection() as conn:
+    #         with conn.cursor() as cur:
+    #             cur.execute(wrapped_sql,params)
+    #             json = cur.fetchone()
+    #             print(json)
+    #             if json == None:
+    #                 return {}
+    #             else:
+    #                 return json[0]
 
+db = Db(os.getenv("RDS_CONNECTION_URL"))

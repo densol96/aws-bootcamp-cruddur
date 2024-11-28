@@ -72,7 +72,7 @@ cors = CORS(
   app, 
   resources={r"*": {"origins": origins}},
   expose_headers="location,link",
-  allow_headers="content-type,if-modified-since",
+  allow_headers="content-type,if-modified-since,accept,authorization",
   methods="OPTIONS,GET,HEAD,POST"
 )
 
@@ -116,9 +116,12 @@ def data_create_message():
 @app.route("/api/activities/home", methods=['GET'])
 @cross_origin()
 def data_home():
-  authenticated = jwt_verifier.accept_request_headers(request.headers)
-  data = HomeActivities.run(authenticated)
-  return data, 200
+   # authenticated = jwt_verifier.accept_request_headers(request.headers)
+  model = HomeActivities.run()
+  if model['errors'] is not None:
+    return model['errors'], 422
+  else:
+    return model['data'], 200
 
 @app.route("/api/activities/@<string:handle>", methods=['GET'])
 def data_handle(handle):
@@ -148,12 +151,9 @@ def data_notifications():
 @app.route("/api/activities", methods=['POST','OPTIONS'])
 @cross_origin()
 def data_activities():
-  user_handle  = 'andrewbrown'
-  message = request.json['message']
-  ttl = request.json['ttl']
-  model = CreateActivity.run(message, user_handle, ttl)
-  if model['errors'] is not None:
-    return model['errors'], 422
+  model = CreateActivity.run(request)
+  if model['data'] is not None:
+    return model['errors']['message'], model['errors']['status']
   else:
     return model['data'], 200
 
@@ -169,7 +169,7 @@ def data_activities_reply(activity_uuid):
   message = request.json['message']
   model = CreateReply.run(message, user_handle, activity_uuid)
   if model['errors'] is not None:
-    return model['errors'], 422
+    return "smthing went wrong", 422
   else:
     return model['data'], 200
 

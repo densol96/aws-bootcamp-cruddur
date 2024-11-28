@@ -44,7 +44,10 @@ export default function ReplyForm(props) {
         setCount(0)
         setMessage('')
         props.setPopped(false)
-      } else {
+      } else if(res.status === 200) {
+        alert("TOKEN EXPIRED!");
+      }
+       else {
         console.log(res)
       }
     } catch (err) {

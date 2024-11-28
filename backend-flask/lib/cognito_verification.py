@@ -82,6 +82,8 @@ class CognitoJwtToken:
     def _check_expiration(claims, current_time):
         if not current_time:
             current_time = time.time()
+        print(f"Current time: {current_time}")
+        print(f"exp: {claims['exp']}")
         if current_time > claims["exp"]:
             raise TokenVerifyError("Token is expired")  # probably another exception
 
