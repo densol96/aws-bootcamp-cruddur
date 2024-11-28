@@ -40,6 +40,7 @@ services:
     volumes: 
       - db:/var/lib/postgresql/data
   frontend-react-js:
+    image: densol96/cruddur
     build: ./frontend-react-js
     ports:
       - "3000:3000"
