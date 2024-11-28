@@ -15,10 +15,14 @@ class CreateActivity:
     }
 
     authenticated = jwt_verifier.accept_request_headers(request.headers)
+    print("", authenticated)
+
     if authenticated is None:
       model['errors']['message'] = "You need to be authenticated to public cruds"
       model['errors']['status'] = 401
       return model
+
+    
     message = request.get_json()["message"]
     ttl = request.get_json()["ttl"]
 
