@@ -1,7 +1,7 @@
 #! /usr/bin/bash
 set -e # stop if it fails at any point
 
-bin_path="/workspace/aws-bootcamp-cruddur/backend-flask/bin/rds"
+bin_path="/workspace/aws-bootcamp-cruddur/backend-flask/bin/sql_db"
 
 echo "Setting up database for $1 environment..."
 

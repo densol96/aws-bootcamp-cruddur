@@ -14,10 +14,12 @@ from lib.db import db
 attrs = {
   'endpoint_url': 'http://localhost:8000'
 }
+
 # unset endpoint url for use with production database
 if len(sys.argv) == 2:
   if "prod" in sys.argv[1]:
     attrs = {}
+
 ddb = boto3.client('dynamodb',**attrs)
 
 def get_user_uuids():
@@ -34,12 +36,13 @@ def get_user_uuids():
         )
   """
   users = db.query_array_json(sql,{
-    'my_handle':  'andrewbrown',
-    'other_handle': 'bayko'
+    'my_nickname':  'andrewbrown',
+    'other_nickname': 'bayko'
   })
-  my_user    = next((item for item in users if item["handle"] == 'andrewbrown'), None)
-  other_user = next((item for item in users if item["handle"] == 'bayko'), None)
+  my_user    = users[0]
+  other_user = users[1]
   results = {
+
     'my_user': my_user,
     'other_user': other_user
   }
@@ -236,6 +239,6 @@ for i in range(len(lines)):
     created_at=created_at,
     message=message,
     my_user_uuid=users[key]['uuid'],
-    my_user_display_name=users[key]['display_name'],
-    my_user_handle=users[key]['handle']
+    my_user_display_name=users[key]['name'],
+    my_user_handle=users[key]['nickname']
   )

@@ -67,4 +67,13 @@ class Db:
                     return json[0]
 
 
-db = Db(os.getenv("RDS_CONNECTION_URL"))
+if os.getenv("FLASK_ENV") == "development":
+    url_string = os.getenv("LOCAL_CONNECTION_URL")
+else:
+    url_string = os.getenv("RDS_CONNECTION_URL")
+
+## when trying to run loccaly
+if url_string == None:
+    url_string = "postgresql://postgres:password@localhost:5432/cruddur" ## localhost environment 
+
+db = Db(url_string)
