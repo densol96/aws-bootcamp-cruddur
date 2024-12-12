@@ -15,8 +15,10 @@ class CreateActivity:
   @staticmethod
   def run(request):
     ## for better readability
-    cognito_user_id = CreateActivity.extract_cognito_user_id(request)
+    cognito_user_id = jwt_verifier.extract_cognito_user_id(request)
     if cognito_user_id is None:
+      CreateActivity.model['errors']['message'] = "You are not authenticated"
+      CreateActivity.model['errors']['status'] = 401
       return CreateActivity.model
     
     message = CreateActivity.extract_message(request)
@@ -36,15 +38,6 @@ class CreateActivity:
       CreateActivity.model['data'] = new_activity
       CreateActivity.model['errors'] = None
     return CreateActivity.model
-
-  @staticmethod
-  def extract_cognito_user_id(request):
-    authenticated = jwt_verifier.accept_request_headers(request.headers)
-    if authenticated is None:
-      CreateActivity.model['errors']['message'] = "You need to be authenticated to public cruds"
-      CreateActivity.model['errors']['status'] = 401
-      return None
-    return authenticated["sub"]
 
   @staticmethod
   def extract_message(request):

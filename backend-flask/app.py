@@ -116,7 +116,7 @@ def data_create_message():
 @app.route("/api/activities/home", methods=['GET'])
 @cross_origin()
 def data_home():
-   # authenticated = jwt_verifier.accept_request_headers(request.headers)
+  authenticated = jwt_verifier.extract_cognito_user_id(request)
   model = HomeActivities.run()
   if model['errors'] is not None:
     return model['errors'], 422

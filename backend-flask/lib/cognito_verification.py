@@ -14,11 +14,11 @@ class TokenVerifyError(Exception):
 class CognitoJwtToken:
     def __init__(self, user_pool_id, user_pool_client_id, region, request_client=None):
         self.region = region
-        if not self.region:
-            raise FlaskAWSCognitoError("No AWS region provided")
         self.user_pool_id = user_pool_id
         self.user_pool_client_id = user_pool_client_id
-        self.claims = None
+        self.request_client = None
+        self.jwk_keys = None
+
         if not request_client:
             self.request_client = requests.get
         else:
@@ -105,8 +105,6 @@ class CognitoJwtToken:
         claims = self._extract_claims(token)
         self._check_expiration(claims, current_time)
         self._check_audience(claims)
-
-        self.claims = claims 
         return claims
 
     def extract_access_token(self, request_headers):
@@ -125,6 +123,13 @@ class CognitoJwtToken:
         except Exception as e:
             print("Problem with cognito_verification.py: ", str(e))
 
+    def extract_cognito_user_id(self, request):
+        # return claims
+        authenticated = self.accept_request_headers(request.headers)
+        if authenticated is not None:
+            return authenticated["sub"]
+        return None
+       
 
 jwt_verifier = CognitoJwtToken(
     user_pool_id=os.getenv("COGNITO_USER_POOLS_ID"),

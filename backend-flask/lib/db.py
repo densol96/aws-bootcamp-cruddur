@@ -60,11 +60,14 @@ class Db:
         with self.pool.connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(sql,params)
-                json = cur.fetchone()
-                if json == None:
+                try:
+                    json = cur.fetchone()
+                    if json == None:
+                        return None
+                    else:
+                        return json[0]
+                except Exception:
                     return None
-                else:
-                    return json[0]
 
 
 if os.getenv("FLASK_ENV") == "development":
