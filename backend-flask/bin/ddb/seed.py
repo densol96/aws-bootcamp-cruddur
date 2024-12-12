@@ -42,7 +42,6 @@ def get_user_uuids():
   my_user    = users[0]
   other_user = users[1]
   results = {
-
     'my_user': my_user,
     'other_user': other_user
   }

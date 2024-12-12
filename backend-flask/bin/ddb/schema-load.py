@@ -18,20 +18,20 @@ table_name = 'cruddur-messages'
 table_schema = {
   'AttributeDefinitions': [
     {
-      'AttributeName': 'message_group_uuid',
-      'AttributeType': 'S'
-    },{
       'AttributeName': 'pk',
       'AttributeType': 'S'
-    },{
+    },
+    {
       'AttributeName': 'sk',
       'AttributeType': 'S'
     }
   ],
-  'KeySchema': [{
+  'KeySchema': [
+    {
       'AttributeName': 'pk',
       'KeyType': 'HASH'
-    },{
+    },
+    {
       'AttributeName': 'sk',
       'KeyType': 'RANGE'
     }
@@ -41,23 +41,26 @@ table_schema = {
       'ReadCapacityUnits': 5,
       'WriteCapacityUnits': 5
   },
-  'GlobalSecondaryIndexes':[{
-    'IndexName':'message-group-sk-index',
-    'KeySchema':[{
-      'AttributeName': 'message_group_uuid',
-      'KeyType': 'HASH'
-    },{
-      'AttributeName': 'sk',
-      'KeyType': 'RANGE'
-    }],
-    'Projection': {
-      'ProjectionType': 'ALL'
-    },
-    'ProvisionedThroughput': {
-      'ReadCapacityUnits': 5,
-      'WriteCapacityUnits': 5
-    },
-  }]
+  # 'GlobalSecondaryIndexes':[
+  #   {
+  #   'IndexName':'message-group-sk-index',
+  #   'KeySchema': [
+  #   {
+  #     'AttributeName': 'message_group_uuid',
+  #     'KeyType': 'HASH'
+  #   },
+  #   {
+  #     'AttributeName': 'sk',
+  #     'KeyType': 'RANGE'
+  #   }],
+  #   'Projection': {
+  #     'ProjectionType': 'ALL'
+  #   },
+  #   'ProvisionedThroughput': {
+  #     'ReadCapacityUnits': 5,
+  #     'WriteCapacityUnits': 5
+  #   },
+  # }]
 }
 
 # create the table
