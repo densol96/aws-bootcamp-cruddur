@@ -1,27 +1,25 @@
 from datetime import datetime, timedelta, timezone
+from lib.ddb import ddb 
+
 class Messages:
-  def run(user_sender_handle, user_receiver_handle):
+  def run(user_sub, group_uuid):
     model = {
-      'errors': None,
-      'data': None
-    }
+        'errors': None,
+        'data': None
+      }
 
-    now = datetime.now(timezone.utc).astimezone()
+    ##### TODO: Authorization
+    # sql = db.load_sql_script("users", "uuid_from_sub.sql")
+    # user_uuid = db.sql_query(sql, {"cognito_user_id": sub})
+   
+    # if user_uuid is not None:
+      # results = ddb.list_messages_in_chat(group_chat_uuid)
+      # model["data"] = results
+    # else:
+    #   print(f"No db-records for the user with the sub of {sub}")
+    #   model["error"] = "Service currently unavailable"
 
-    results = [
-      {
-        'uuid': '4e81c06a-db0f-4281-b4cc-98208537772a' ,
-        'display_name': 'Andrew Brown',
-        'handle':  'andrewbrown',
-        'message': 'Cloud is fun!',
-        'created_at': now.isoformat()
-      },
-      {
-        'uuid': '66e12864-8c26-4c3a-9658-95a10f8fea67',
-        'display_name': 'Andrew Brown',
-        'handle':  'andrewbrown',
-        'message': 'This platform is great!',
-        'created_at': now.isoformat()
-    }]
-    model['data'] = results
+
+    results = ddb.list_messages_in_chat(group_uuid)
+    model["data"] = results
     return model

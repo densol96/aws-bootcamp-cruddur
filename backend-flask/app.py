@@ -81,24 +81,28 @@ def root_page():
   return "Hello World!"
 
 @app.route("/api/message_groups", methods=['GET'])
+@cross_origin()
 def data_message_groups():
-  user_handle  = 'andrewbrown'
-  model = MessageGroups.run(user_handle=user_handle)
-  if model['errors'] is not None:
-    return model['errors'], 422
-  else:
+  user_sub = jwt_verifier.extract_cognito_user_id(request)
+  if user_sub is not None: 
+    model = MessageGroups.run(user_sub)
     return model['data'], 200
-
-@app.route("/api/messages/@<string:handle>", methods=['GET'])
-def data_messages(handle):
-  user_sender_handle = 'andrewbrown'
-  user_receiver_handle = request.args.get('user_reciever_handle')
-
-  model = Messages.run(user_sender_handle=user_sender_handle, user_receiver_handle=user_receiver_handle)
-  if model['errors'] is not None:
-    return model['errors'], 422
   else:
-    return model['data'], 200
+    return "You need to be authenticated", 401
+  
+    
+@app.route("/api/messages/@<string:group_uuid>", methods=['GET'])
+@cross_origin()
+def data_messages(group_uuid):
+  user_sub = jwt_verifier.extract_cognito_user_id(request)
+  if user_sub is not None:
+    model = Messages.run(user_sub, group_uuid)
+    if model['errors'] is not None:
+      return model['errors'], 422
+    else:
+      return model['data'], 200
+  else:
+    return "You need to be authenticated", 401
 
 @app.route("/api/messages", methods=['POST','OPTIONS'])
 @cross_origin()
@@ -124,6 +128,7 @@ def data_home():
     return model['data'], 200
 
 @app.route("/api/activities/@<string:handle>", methods=['GET'])
+@cross_origin()
 def data_handle(handle):
   model = UserActivities.run(handle)
   if model['errors'] is not None:
@@ -132,6 +137,7 @@ def data_handle(handle):
     return model['data'], 200
 
 @app.route("/api/activities/search", methods=['GET'])
+@cross_origin()
 def data_search():
   term = request.args.get('term')
   model = SearchActivities.run(term)

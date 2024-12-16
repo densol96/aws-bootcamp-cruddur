@@ -1,24 +1,19 @@
 from datetime import datetime, timedelta, timezone
+from lib.ddb import ddb 
+from lib.db import db 
+
 class MessageGroups:
-  def run(user_handle):
+  def run(sub):
     model = {
       'errors': None,
       'data': None
     }
-
-    now = datetime.now(timezone.utc).astimezone()
-    results = [
-      {
-        'uuid': '24b95582-9e7b-4e0a-9ad1-639773ab7552',
-        'display_name': 'Andrew Brown',
-        'handle':  'andrewbrown',
-        'created_at': now.isoformat()
-      },
-      {
-        'uuid': '417c360e-c4e6-4fce-873b-d2d71469b4ac',
-        'display_name': 'Worf',
-        'handle':  'worf',
-        'created_at': now.isoformat()
-    }]
-    model['data'] = results
+    sql = db.load_sql_script("users", "uuid_from_sub.sql")
+    uuid = db.sql_query(sql, {"cognito_user_id": sub})
+    if uuid is not None:
+      results = ddb.list_message_groups(uuid)
+      model["data"] = results
+    else:
+      print(f"No db-records for the user with the sub of {sub}")
+      model["error"] = "Service currently unavailable"
     return model

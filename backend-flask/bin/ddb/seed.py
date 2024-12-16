@@ -36,8 +36,8 @@ def get_user_uuids():
         )
   """
   users = db.query_array_json(sql,{
-    'my_nickname':  'andrewbrown',
-    'other_nickname': 'bayko'
+    'my_nickname':  'solodeni',
+    'other_nickname': 'davidka'
   })
   my_user    = users[0]
   other_user = users[1]

@@ -17,8 +17,12 @@ export default function MessageGroupsPage() {
     try {
       const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/message_groups`
       const res = await fetch(backend_url, {
-        method: "GET"
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
       });
+      console.log("!!!!", res);
       let resJson = await res.json();
       if (res.status === 200) {
         setMessageGroups(resJson)
@@ -31,14 +35,14 @@ export default function MessageGroupsPage() {
   };  
 
   const checkAuth = async () => {
-    console.log('checkAuth')
-    // [TODO] Authenication
-    if (Cookies.get('user.logged_in')) {
-      setUser({
-        display_name: Cookies.get('user.name'),
-        handle: Cookies.get('user.username')
-      })
-    }
+    // console.log('checkAuth')
+    // // [TODO] Authenication
+    // if (Cookies.get('user.logged_in')) {
+    //   setUser({
+    //     display_name: Cookies.get('user.name'),
+    //     handle: Cookies.get('user.username')
+    //   })
+    // }
   };
 
   React.useEffect(()=>{
