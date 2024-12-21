@@ -36,10 +36,11 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
+    user: 33333:33333
     ports:
       - '5432:5432'
     volumes: 
-      - db:/var/lib/postgresql/data
+      - ./docker/db:/var/lib/postgresql/data
   frontend-react-js:
     image: densol96/cruddur
     build: ./frontend-react-js
