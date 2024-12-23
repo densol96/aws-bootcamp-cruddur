@@ -16,5 +16,5 @@ else
     source "$bin_path/db-schema-load.sh" prod
     source "$bin_path/db-seed.sh" prod
 fi
-source "$bin_path/update-cognito-ids.py"
+python3 "$bin_path/update-cognito-ids.py"
 # source "$bin_path/db/update_cognito_user_ids"

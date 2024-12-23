@@ -26,8 +26,8 @@ export default function MessageItem(props) {
       <div className='message_content'>
         <div classsName='message_meta'>
           <div className='message_identity'>
-            <div className='display_name'>{props.message.display_name}</div>
-            <div className="handle">@{props.message.handle}</div>
+            <div className='display_name'>{props.message.user_name}</div>
+            <div className="handle">@{props.message.user_nickname}</div>
           </div>{/* activity_identity */}
         </div>{/* message_meta */}
         <div className="message">{props.message.message}</div>

@@ -13,6 +13,7 @@ from services.messages import *
 from services.create_message import *
 from services.show_activity import *
 from services.notifications_activities import *
+from services.users_short import *
 
 # Homeycomb related stuff
 from opentelemetry import trace
@@ -32,7 +33,7 @@ import logging
 from time import strftime
 
 # Custom JWT verifier using Cognito public key
-from lib.cognito_verification import jwt_verifier
+from lib.cognito_verification import jwt_verifier, TokenVerifyError
 
 # Initialize tracing and an exporter that can send data to Honeycomb
 provider = TracerProvider()
@@ -107,15 +108,40 @@ def data_messages(group_uuid):
 @app.route("/api/messages", methods=['POST','OPTIONS'])
 @cross_origin()
 def data_create_message():
-  user_sender_handle = 'andrewbrown'
-  user_receiver_handle = request.json['user_receiver_handle']
-  message = request.json['message']
-
-  model = CreateMessage.run(message=message,user_sender_handle=user_sender_handle,user_receiver_handle=user_receiver_handle)
-  if model['errors'] is not None:
-    return model['errors'], 422
-  else:
-    return model['data'], 200
+  message_group_uuid   = request.json.get('message_group_uuid')
+  user_receiver_nickname = request.json.get('nickname')
+  message = request.json.get('message')
+  try:
+    user_sub = jwt_verifier.extract_cognito_user_id(request)
+    if message_group_uuid == None:
+      # Create for the first time
+      model = CreateMessage.run(
+        mode="create",
+        message=message,
+        cognito_user_id=user_sub,
+        user_receiver_nickname=user_receiver_nickname
+      )
+    else:
+      # Push onto existing Message Group
+      model = CreateMessage.run(
+        mode="update",
+        message=message,
+        message_group_uuid=message_group_uuid,
+        cognito_user_id=user_sub
+      )
+    if model['errors'] is not None:
+      print(model["errors"])
+      return model['errors'], 422
+    else:
+      return model['data'], 200
+  except TokenVerifyError as e:
+    # unauthenicatied request
+    app.logger.debug(e)
+    return {}, 401
+  except Exception as e:
+    # unauthenicatied request
+    app.logger.debug(e)
+    return {message: str(e)}, 400
 
 @app.route("/api/activities/home", methods=['GET'])
 @cross_origin()
@@ -178,6 +204,12 @@ def data_activities_reply(activity_uuid):
     return "smthing went wrong", 422
   else:
     return model['data'], 200
+
+@app.route("/api/users/@<string:handle>/short", methods=['GET'])
+@cross_origin()
+def data_users_short(handle):
+  data = UsersShort.run(handle)
+  return data, 200
 
 if __name__ == "__main__":
   app.run(debug=True)

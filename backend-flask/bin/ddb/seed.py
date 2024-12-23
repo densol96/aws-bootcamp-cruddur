@@ -45,8 +45,6 @@ def get_user_uuids():
     'my_user': my_user,
     'other_user': other_user
   }
-  print('get_user_uuids')
-  print(results)
   return results
 
 def create_message_group(client,message_group_uuid, my_user_uuid, last_message_at=None, message=None, other_user_uuid=None, other_user_display_name=None, other_user_handle=None):
@@ -57,8 +55,8 @@ def create_message_group(client,message_group_uuid, my_user_uuid, last_message_a
     'message_group_uuid': {'S': message_group_uuid},
     'message':  {'S': message},
     'user_uuid': {'S': other_user_uuid},
-    'user_display_name': {'S': other_user_display_name},
-    'user_handle': {'S': other_user_handle}
+    'user_name': {'S': other_user_display_name},
+    'user_nickname': {'S': other_user_handle}
   }
 
   response = client.put_item(
@@ -75,8 +73,8 @@ def create_message(client,message_group_uuid, created_at, message, my_user_uuid,
     'message_uuid': { 'S': str(uuid.uuid4()) },
     'message': {'S': message},
     'user_uuid': {'S': my_user_uuid},
-    'user_display_name': {'S': my_user_display_name},
-    'user_handle': {'S': my_user_handle}
+    'user_name': {'S': my_user_display_name},
+    'user_nickname': {'S': my_user_handle}
   }
   # insert the record into the table
   response = client.put_item(
@@ -231,7 +229,8 @@ for i in range(len(lines)):
     print(lines[i])
     raise 'invalid line'
 
-  created_at = (now + timedelta(minutes=i)).isoformat()
+  # created_at = (now + timedelta(minutes=i)).isoformat()
+  created_at = (now).isoformat()
   create_message(
     client=ddb,
     message_group_uuid=message_group_uuid,

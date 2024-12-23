@@ -12,6 +12,7 @@ class MessageGroups:
     uuid = db.sql_query(sql, {"cognito_user_id": sub})
     if uuid is not None:
       results = ddb.list_message_groups(uuid)
+      print("results: ", uuid, results)
       model["data"] = results
     else:
       print(f"No db-records for the user with the sub of {sub}")

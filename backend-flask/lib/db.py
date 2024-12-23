@@ -50,14 +50,12 @@ class Db:
             with conn.cursor() as cur:
                 cur.execute(wrapped_sql,params)
                 json = cur.fetchone()
-                print(json)
                 if json == None:
                     return None
                 else:
                     return json[0]
 
     def sql_query(self, sql, params={}):
-        print("I RUNNNNN")
         with self.pool.connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(sql,params)

@@ -54,7 +54,7 @@ export default function ActivityContent(props) {
         <div className='activity_meta'>
           <Link className='activity_identity' to={`/@`+props.activity.nickname}>
             <div className='display_name'>{props.activity.name}</div>
-            <div className="handle">@{props.activity.handle}</div>
+            <div className="handle">@{props.activity.nickname}</div>
           </Link>{/* activity_identity */}
           <div className='activity_times'>
             <div className="created_at" title={props.activity.created_at}>
