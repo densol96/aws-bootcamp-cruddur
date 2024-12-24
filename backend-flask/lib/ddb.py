@@ -152,4 +152,5 @@ class DynamoDb:
             print(e)
 
 
-ddb = DynamoDb("http://dynamodb-local:8000", "cruddur-messages")
+# ddb = DynamoDb("http://dynamodb-local:8000", "cruddur-messages")
+ddb = DynamoDb("http://dynamodb.eu-north-1.amazonaws.com", "cruddur-messages")
